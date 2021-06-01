@@ -9,36 +9,32 @@ from datetime import datetime
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-GUILD = os.getenv('DISCORD_GUILD')
 
 client = discord.Client()
 
-
-
-
+# Only used for debug atm
 @client.event
 async def on_ready():
-    guild = discord.utils.get(client.guilds, name=GUILD)
-
     print(
-        f'{client.user} is connected to the following guild:\n'
-        f'{guild.name}(id: {guild.id})'
+        f'{client.user} is connected'
     )
 
 @client.event
 async def on_message(message):
-    guild = discord.utils.get(client.guilds, name=GUILD)
+    # Init
     now = datetime.now() # current date and time
     date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
 
+    # Don't respond to self to avoid endless loops
     if message.author == client.user:
         return
 
+    # Pikkelikker
     if re.findall(r'\b(pik)\b', message.content, re.IGNORECASE):
         await message.channel.send("Pik?", reference=message.to_reference())
         return
     
-
+    # Trucje
     if message.content == "!valaan":
         ref = message.reference
         if ref is not None:
@@ -46,6 +42,7 @@ async def on_message(message):
             return
         print("err: could not find ref", message.reference)
 
+    # Ik heb alle rode pillen die je wilde krijgen
     y = random.randint(0, 4)
     if message.content == "!redpill":
         print(date_time, ">redpill", message.guild.name, message.channel.name, y)
@@ -61,6 +58,7 @@ async def on_message(message):
             await message.channel.send("Veel plezier! :thumbsup::thumbsup:", file=discord.File(r'files/Industrial-Society-and-Its-Future-Theodore-Kaczynski.pdf'), reference=message.to_reference())    
         return
 
+    # Random reacties eens in de x posts
     y = random.randint(0, 20)
     print(date_time, message.guild.name, message.channel.name, y)
     if y == 0: #and message.guild.name == "TestServer":
@@ -83,5 +81,5 @@ async def on_message(message):
         await message.channel.send(response, reference=message.to_reference())
         return
 
-
+# Start client
 client.run(TOKEN)

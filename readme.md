@@ -1,7 +1,7 @@
-#iWalden
+# iWalden
 De meme, de legende
 
-# Installatie
+## Installatie
 ```bash
 pip install -U discord.py
 pip install -U python-dotenv
@@ -17,12 +17,12 @@ DISCORD_TOKEN={token}
 ```
 
 
-# run
+## Run
 ```
 python bot.py
 ```
 
-# Run in background
+## Run in background
 ```bash
 nohup python -u /home/<user>/git/iwalden/bot.py > program.out 2>&1 &
 ```

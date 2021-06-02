@@ -33,6 +33,11 @@ async def on_message(message):
     if re.findall(r'\b(pik)\b', message.content, re.IGNORECASE):
         await message.channel.send("Pik?", reference=message.to_reference())
         return
+
+    # Respetto
+    if message.content == ":joy: :joy:":
+        await message.channel.send("ik houd van humor maar ik houd nog meer van respect", reference=message.to_reference())
+        return
     
     # Trucje
     if message.content == "!valaan":

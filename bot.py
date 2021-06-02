@@ -76,7 +76,23 @@ async def on_message(message):
             await message.channel.send("Veel plezier! :thumbsup::thumbsup:", file=discord.File(r'files/Industrial-Society-and-Its-Future-Theodore-Kaczynski.pdf'), reference=message.to_reference())    
         return
 
-    
+    # Slimmerd commando
+    # msg.channel.messages.fetch("701574160211771462")
+    if message.content == "!slim":
+        print(date_time, ">slim-command", message.guild.name, message.channel.name)
+        ref = message.reference
+        if ref is not None:
+            # get referenced message
+            oc_msg = await message.channel.fetch_message(message.reference.message_id)
+
+            # remove command msg
+            await message.delete()
+
+            # respond to oc_msg
+            slim = "Ik heb met plezier je bijdragen gelezen en ik weet dat je een slimmerdje bent. \nSlimmerik. \nSlim"
+            await oc_msg.channel.send(slim, reference=ref)
+            return
+        print("err: could not find ref", message.reference)    
     
     # ------------------------------- 2de rangs memerij -----------------------------------------------------
     # Verkeerde kanaal

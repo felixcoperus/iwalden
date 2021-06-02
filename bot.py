@@ -75,7 +75,7 @@ async def on_message(message):
         return
 
     # Slimmerd
-    if len(messag.content) > 150:
+    if len(message.content) > 150:
         y = random.randint(0, 5)
         response = "Ik heb met plezier je bijdragen gelezen en ik weet dat je een slimmerdje bent. \nSlimmerik. \nSlim" 
         await message.channel.send(response, reference=message.to_reference())

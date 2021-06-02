@@ -55,9 +55,9 @@ async def on_message(message):
         response = (
             "Hier op deze server zitten best veel mensen met een warmbloedig hart. "
             "Mods, leden, echt veel mensen die je in het echt ook niet \"badonkadonk\" in hun gezicht zou zeggen als ze "
-            "het over diepe dingen hebben, en hun best doen. 
-            "Ik begrijp dat het even lollig was en ik neem je de meme daarom ook niet kwalijk." 
-            "\nMaar zou je hem na dit gesprek nog steeds plaatsen?"
+            "het over diepe dingen hebben, en hun best doen. \n"
+            "Ik begrijp dat het even lollig was en ik neem je de meme daarom ook niet kwalijk.\n" 
+            "Maar zou je hem na dit gesprek nog steeds plaatsen?"
         )
         print(date_time, ">badonkadonk", message.guild.name, message.channel.name)
         await message.channel.send(response, reference=message.to_reference())

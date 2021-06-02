@@ -82,9 +82,6 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-
-
-
     # ------------------------------- commandos --------------------------------------------------------
     # Trucje
     if message.content == "!valaan":
@@ -99,6 +96,7 @@ async def on_message(message):
     y = random.randint(0, 4)
     if message.content == "!redpill":
         print(date_time, ">redpill", message.guild.name, message.channel.name, y)
+
         if y == 0:
             await message.channel.send("Zalig, dit. Lekker met koptelefoon op aan het luisteren. :pray::wink:  https://www.youtube.com/watch?v=YRNKjQg6y-c", reference=message.to_reference())     
         elif y == 1:
@@ -130,20 +128,14 @@ async def on_message(message):
 
     # muilkorf verwijderen
     if message.content == "Sorry iWalden, ik zal geen badonkadonk meer zeggen" or ("sorry" in message.content.lower() and "walden" in message.content.lower()):
-        # test if user is muted
-        roles = [x for x in message.author.roles if x.name == "iMuilkorf"]
+        # remove role
+        roles = [x for x in await message.guild.fetch_roles() if x.name == "iMuilkorf"]
+        await message.author.remove_roles(*roles, reason="gewoon een tof lid")
 
-        if len(roles) > 0:
-            # remove role
-            roles = [x for x in await message.guild.fetch_roles() if x.name == "iMuilkorf"]
-            await message.author.remove_roles(*roles, reason="gewoon een tof lid")
-
-            # walden sausje
-            await message.channel.send("Ik accepteer je excuses. Ik vind het jammer dat je ervan lijkt te genieten als leden van deze server zich ongemakkelijk of onprettig voelen, maar je bent een tof lid, en ik wil best mijn hand over mijn hart strijken voor zo een tof lid als jij :relieved:", reference=message.to_reference())
+        # walden sausje
+        await message.channel.send("Ik accepteer je excuses. Ik vind het jammer dat je ervan lijkt te genieten als leden van deze server zich ongemakkelijk of onprettig voelen, maar je bent een tof lid, en ik wil best mijn hand over mijn hart strijken voor zo een tof lid als jij :relieved:", reference=message.to_reference())
         
-            print(date_time, ">removed muilkorf", message.author.name)
-        else:
-            await message.channel.send("De wonderen zijn de wereld nog niet uit.", reference=message.to_reference())
+        print(date_time, ">removed muilkorf", message.author.name)
         return
 
     
@@ -170,7 +162,7 @@ async def on_message(message):
         return
 
     # badonkadonk
-    if 'badonkadonk' in message.content or 'badonkabonk' in message.content:
+    if 'badonkadonk' in message.content.lower() or 'badonkabonk' in message.content.lower():
         author = message.author
         warning_type = 'badonkadonk'
         cooldown = timedelta(weeks=0, days=0, hours=2, minutes=0, seconds=0)
@@ -211,18 +203,18 @@ async def on_message(message):
             await dm_channel.send("Ik ben heel teleurgesteld in jou. Als je \"Sorry iWalden, ik zal geen badonkadonk meer zeggen\" zegt in **#bot-commandos** vergeef ik het je. We kunnen allemaal leren van onze fouten.")
 
             print(date_time, ">muilkorf:badonkadonk", message.author.name, warnings)
-
+            
         return             
     
 
     # ------------------------------- 2de rangs memerij -----------------------------------------------------
-    # Verkeerde kanaal
-    print(message.guild.name, message.channel.name) # debug
-    if '?' in message.content and 'waarom' in message.content and message.channel.name != 'algemeen':
-        response = "Interessante vraag. Even doorpraten in #algemeen alstjeblieft. Volgende keer kan je ook meteen daar de vragen stellen." 
-        await message.channel.send(response, reference=message.to_reference())
-        print(date_time, ">vraag", message.guild.name, message.channel.name, response)
-        return      
+    # # Verkeerde kanaal
+    # print(message.guild.name, message.channel.name) # debug
+    # if '?' in message.content and 'waarom' in message.content and message.channel.name != 'algemeen':
+    #     response = "Interessante vraag. Even doorpraten in #algemeen alstjeblieft. Volgende keer kan je ook meteen daar de vragen stellen." 
+    #     await message.channel.send(response, reference=message.to_reference())
+    #     print(date_time, ">vraag", message.guild.name, message.channel.name, response)
+    #     return      
 
     # Slimmerd
     if len(message.content) > 150:
@@ -236,28 +228,28 @@ async def on_message(message):
 
 
     # ------------------------------- random responses -----------------------------------------------------
-    # Random reacties eens in de x posts
-    y = random.randint(0, 20)
-    print(date_time, message.guild.name, message.channel.name, y)
-    if y == 0: #and message.guild.name == "TestServer":
-        phrases = [
-            "Interessant! Bedankt voor je bijdrage.",
-            "Neem het met een korrel zout. Tegelijk: ik twijfel grondig aan deze stelling.",
-            "Wat een zwendel.",
-            "Lieve help.",
-            "Ik heb wel zitten te genieten af en toe.",
-            "Heel interessant.",
-            "Ja, vreemd hoor! Dank voor het delen",
-            "Best eng eigenlijk.",
-            "Dit zal geen WO3 ontketenen.",
-            "Over lessen leren uit het verleden gesproken... ",
-            "Ja. Wel een beetje kort door de bocht",
-            "Waarom als ik even mag vragen? (Gekke maar belangrijke vraag)",
-        ]       
-        response = random.choice(phrases) 
-        print(date_time, ">replied", message.guild.name, message.channel.name, response)
-        await message.channel.send(response, reference=message.to_reference())
-        return
+    # # Random reacties eens in de x posts
+    # y = random.randint(0, 20)
+    # print(date_time, message.guild.name, message.channel.name, y)
+    # if y == 0: #and message.guild.name == "TestServer":
+    #     phrases = [
+    #         "Interessant! Bedankt voor je bijdrage.",
+    #         "Neem het met een korrel zout. Tegelijk: ik twijfel grondig aan deze stelling.",
+    #         "Wat een zwendel.",
+    #         "Lieve help.",
+    #         "Ik heb wel zitten te genieten af en toe.",
+    #         "Heel interessant.",
+    #         "Ja, vreemd hoor! Dank voor het delen",
+    #         "Best eng eigenlijk.",
+    #         "Dit zal geen WO3 ontketenen.",
+    #         "Over lessen leren uit het verleden gesproken... ",
+    #         "Ja. Wel een beetje kort door de bocht",
+    #         "Waarom als ik even mag vragen? (Gekke maar belangrijke vraag)",
+    #     ]       
+    #     response = random.choice(phrases) 
+    #     print(date_time, ">replied", message.guild.name, message.channel.name, response)
+    #     await message.channel.send(response, reference=message.to_reference())
+    #     return
 
 
 

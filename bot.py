@@ -29,6 +29,7 @@ async def on_message(message):
     if message.author == client.user:
         return
 
+    # ------------------------------- content-based ---------------------------------------------------
     # Pikkelikker
     if re.findall(r'\b(pik)\b', message.content, re.IGNORECASE):
         print(date_time, ">pik", message.guild.name, message.channel.name)
@@ -40,7 +41,16 @@ async def on_message(message):
         print(date_time, ">respetto", message.guild.name, message.channel.name)
         await message.channel.send("ik houd van humor maar ik houd nog meer van respect", reference=message.to_reference())
         return
+
+    # gewoon joods
+    mc = message.content
+    if ("joods" in mc or "joden" in mc or "jood" in mc) and "gewoon" in mc:
+        response = "Je kunt niet \"gewoon joods\" zijn, als je wil kunnen we doorpraten in #gamer-zone. Volgensmij is het antisemitisch om te denken dat er menselijke rassen zijn."
+        print(date_time, ">joods", message.guild.name, message.channel.name)
+        await message.channel.send(response, reference=message.to_reference())
+        return
     
+    # ------------------------------- commandos --------------------------------------------------------
     # Trucje
     if message.content == "!valaan":
         print(date_time, ">attack", message.guild.name, message.channel.name)
@@ -66,22 +76,29 @@ async def on_message(message):
             await message.channel.send("Veel plezier! :thumbsup::thumbsup:", file=discord.File(r'files/Industrial-Society-and-Its-Future-Theodore-Kaczynski.pdf'), reference=message.to_reference())    
         return
 
+    
+    
+    # ------------------------------- 2de rangs memerij -----------------------------------------------------
     # Verkeerde kanaal
     print(message.guild.name, message.channel.name) # debug
     if '?' in message.content and 'waarom' in message.content and message.channel.name != 'algemeen':
         response = "Interessante vraag. Even doorpraten in #algemeen alstjeblieft. Volgende keer kan je ook meteen daar de vragen stellen." 
         await message.channel.send(response, reference=message.to_reference())
         print(date_time, ">vraag", message.guild.name, message.channel.name, response)
-        return
+        return      
 
     # Slimmerd
     if len(message.content) > 150:
         y = random.randint(0, 5)
-        response = "Ik heb met plezier je bijdragen gelezen en ik weet dat je een slimmerdje bent. \nSlimmerik. \nSlim" 
-        await message.channel.send(response, reference=message.to_reference())
-        print(date_time, ">slimmerd", message.guild.name, message.channel.name, response)
-        return
+        if y == 0:
+            response = "Ik heb met plezier je bijdragen gelezen en ik weet dat je een slimmerdje bent. \nSlimmerik. \nSlim" 
+            await message.channel.send(response, reference=message.to_reference())
+            print(date_time, ">slimmerd", message.guild.name, message.channel.name, response)
+            return
 
+
+
+    # ------------------------------- random responses -----------------------------------------------------
     # Random reacties eens in de x posts
     y = random.randint(0, 20)
     print(date_time, message.guild.name, message.channel.name, y)

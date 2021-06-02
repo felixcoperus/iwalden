@@ -31,16 +31,19 @@ async def on_message(message):
 
     # Pikkelikker
     if re.findall(r'\b(pik)\b', message.content, re.IGNORECASE):
+        print(date_time, ">pik", message.guild.name, message.channel.name)
         await message.channel.send("Pik?", reference=message.to_reference())
         return
 
     # Respetto
     if message.content == "😂 😂":
+        print(date_time, ">respetto", message.guild.name, message.channel.name)
         await message.channel.send("ik houd van humor maar ik houd nog meer van respect", reference=message.to_reference())
         return
     
     # Trucje
     if message.content == "!valaan":
+        print(date_time, ">attack", message.guild.name, message.channel.name)
         ref = message.reference
         if ref is not None:
             await message.channel.send("Blaf blaf blaf! ```*struggle snuggle*```", reference=ref)
@@ -85,6 +88,8 @@ async def on_message(message):
         print(date_time, ">replied", message.guild.name, message.channel.name, response)
         await message.channel.send(response, reference=message.to_reference())
         return
+
+
 
 # Start client
 client.run(TOKEN)

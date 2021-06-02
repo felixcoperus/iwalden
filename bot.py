@@ -129,15 +129,21 @@ async def on_message(message):
         print("err: could not find ref", message.reference)   
 
     # muilkorf verwijderen
-    if message.content == "Sorry iWalden, ik zal geen badonkabonk meer zeggen":
-        # remove role
-        roles = [x for x in await message.guild.fetch_roles() if x.name == "iMuilkorf"]
-        await message.author.remove_roles(*roles, reason="gewoon een tof lid")
+    if message.content == "Sorry iWalden, ik zal geen badonkadonk meer zeggen" or ("sorry" in message.content.lower() and "walden" in message.content.lower()):
+        # test if user is muted
+        roles = [x for x in message.author.roles if x.name == "iMuilkorf"]
 
-        # walden sausje
-        await message.channel.send("Ik accepteer je excuses. Ik vind het jammer dat je ervan lijkt te genieten als leden van deze server zich ongemakkelijk of onprettig voelen, maar je bent een tof lid, en ik wil best mijn hand over mijn hart strijken voor zo een tof lid als jij :relieved:", reference=message.to_reference())
+        if len(roles) > 0:
+            # remove role
+            roles = [x for x in await message.guild.fetch_roles() if x.name == "iMuilkorf"]
+            await message.author.remove_roles(*roles, reason="gewoon een tof lid")
+
+            # walden sausje
+            await message.channel.send("Ik accepteer je excuses. Ik vind het jammer dat je ervan lijkt te genieten als leden van deze server zich ongemakkelijk of onprettig voelen, maar je bent een tof lid, en ik wil best mijn hand over mijn hart strijken voor zo een tof lid als jij :relieved:", reference=message.to_reference())
         
-        print(date_time, ">removed muilkorf", message.author.name)
+            print(date_time, ">removed muilkorf", message.author.name)
+        else:
+            await message.channel.send("De wonderen zijn de wereld nog niet uit.", reference=message.to_reference())
         return
 
     
@@ -202,10 +208,10 @@ async def on_message(message):
             dm_channel = author.dm_channel
             if dm_channel is None:
                 dm_channel = await author.create_dm()
-            await dm_channel.send("Ik ben heel teleurgesteld in jou. Als je \"Sorry iWalden, ik zal geen badonkabonk meer zeggen\" zegt in **#bot-commandos** vergeef ik het je. We kunnen allemaal leren van onze fouten.")
+            await dm_channel.send("Ik ben heel teleurgesteld in jou. Als je \"Sorry iWalden, ik zal geen badonkadonk meer zeggen\" zegt in **#bot-commandos** vergeef ik het je. We kunnen allemaal leren van onze fouten.")
 
             print(date_time, ">muilkorf:badonkadonk", message.author.name, warnings)
-            
+
         return             
     
 

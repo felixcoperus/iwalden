@@ -35,7 +35,7 @@ async def on_message(message):
         return
 
     # Respetto
-    if message.content == ":joy: :joy:":
+    if message.content == "😂 😂":
         await message.channel.send("ik houd van humor maar ik houd nog meer van respect", reference=message.to_reference())
         return
     

@@ -82,10 +82,6 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    # Only respond in #bot-commands, unless user is Felixc
-    if message.author.name != 'Felikc' and message.channel.name != "bot-commandos"
-        return
-
     # ------------------------------- commandos --------------------------------------------------------
     # Better clear command
     if message.content.startswith("!clear") and message.author.name == 'Felikc':
@@ -93,13 +89,15 @@ async def on_message(message):
         number = message.content.split(' ')[1]
         if number.isdigit() == False:
             return
-        number = int(number)
+        number = int(number) + 1
 
         # get messages & delete
         messages = await message.channel.history(limit=number).flatten()
-        for (message in messages){
-            message.delete()
-        }
+        for message in messages:
+            await message.delete()
+
+        print("Done deleting messages.")
+        return
 
     # Trucje
     if message.content == "!valaan":
@@ -109,6 +107,8 @@ async def on_message(message):
             await message.channel.send("Blaf blaf blaf! ```*struggle snuggle*```", reference=ref)
             return
         print("err: could not find ref", message.reference)
+
+
 
     # Ik heb alle rode pillen die je wilde krijgen
     y = random.randint(0, 4)
@@ -155,6 +155,11 @@ async def on_message(message):
         
         print(date_time, ">removed muilkorf", message.author.name)
         return
+
+
+    # Only respond in #bot-commands, unless user is Felixc
+    if message.channel.name != "bot-commandos":
+        return   
 
     
 

@@ -93,8 +93,8 @@ async def on_message(message):
 
         # get messages & delete
         messages = await message.channel.history(limit=number).flatten()
-        for message in messages:
-            await message.delete()
+        for msg in messages:
+            await msg.delete()
 
         print("Done deleting messages.")
         return

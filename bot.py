@@ -11,7 +11,10 @@ import os.path
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-client = discord.Client()
+intents = discord.Intents.default()
+intents.members = True
+
+client = discord.Client(intents=intents)
 
 # ========================================================================================
 # CUSTOM FUNCTIONS
@@ -83,18 +86,55 @@ async def on_message(message):
         return
 
     # ------------------------------- commandos --------------------------------------------------------
+    # test
+    if message.content == '!fc':
+        manage_messages = message.channel.permissions_for(message.author).manage_messages
+        return
+
+    # buikspreekpop
+    if message.content.startswith('!say'):
+        # zeg na
+        text = message.content[5:]
+        await message.channel.send(text, reference=message.reference)
+
+        # verwijder commando
+        await message.delete()
+        return
+            
+
     # Better clear command
-    if message.content.startswith("!clear") and message.author.name == 'Felikc':
-        # get amount to delete
-        number = message.content.split(' ')[1]
-        if number.isdigit() == False:
+    if message.content.startswith("!clean"):
+        # get user felixc to let him know if people try to misuse the bot
+        felikc = message.guild.get_member_named('Felikc')
+
+        # test if user has manage_messages permission
+        manage_messages = message.channel.permissions_for(message.author).manage_messages
+        print(manage_messages)
+        if manage_messages == False:
+            await message.channel.send(f"Computer says no :hot_face: {felikc.mention}", reference=message.to_reference())
             return
-        number = int(number) + 1
+
+        # get amount to delete
+        arguments = message.content.split(' ')
+        if len(arguments) != 2 or arguments[1].isdigit() == False:
+            await message.channel.send("Je hebt het commando verkeerd gebruikt mijn beste, typ het zo: `!clean 2` (2 is het aantal berichten dat je wilt verwijderen).", reference=message.to_reference())
+            return
+
+        number = int(arguments[1]) + 1
+
+        print(date_time, f">clear {number}", message.guild.name, message.channel.name, message.author.name)
+
 
         # get messages & delete
         messages = await message.channel.history(limit=number).flatten()
         for msg in messages:
             await msg.delete()
+
+        # dm author
+        dm_channel = message.author.dm_channel
+        if dm_channel is None:
+            dm_channel = await message.author.create_dm()
+        await dm_channel.send(f"Klaar met verwijderen van {number - 1} berichten in {message.channel.name}.")
 
         print("Done deleting messages.")
         return
@@ -104,7 +144,7 @@ async def on_message(message):
         print(date_time, ">attack", message.guild.name, message.channel.name)
         ref = message.reference
         if ref is not None:
-            await message.channel.send("Blaf blaf blaf! ```*struggle snuggle*```", reference=ref)
+            await message.channel.send("Blaf blaf blaf! ```*struggle snuggle*```", reference=message.reference)
             return
         print("err: could not find ref", message.reference)
 

@@ -82,7 +82,25 @@ async def on_message(message):
     if message.author == client.user:
         return
 
+    # Only respond in #bot-commands, unless user is Felixc
+    if message.author.name != 'Felikc' and message.channel.name != "bot-commandos"
+        return
+
     # ------------------------------- commandos --------------------------------------------------------
+    # Better clear command
+    if message.content.startswith("!clear") and message.author.name == 'Felikc':
+        # get amount to delete
+        number = message.content.split(' ')[1]
+        if number.isdigit() == False:
+            return
+        number = int(number)
+
+        # get messages & delete
+        messages = await message.channel.history(limit=number).flatten()
+        for (message in messages){
+            message.delete()
+        }
+
     # Trucje
     if message.content == "!valaan":
         print(date_time, ">attack", message.guild.name, message.channel.name)

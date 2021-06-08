@@ -233,24 +233,22 @@ async def on_message(message):
             return       
 
         # iWaldeeeeeeeeeeeeeeeen ---------------------------------------------------------
-        if 'iwalden' in message.content.lower():
-            y = random.randint(0, 1)
-            if y == 0:     
-                phrases = [
-                    "Neem het met een korrel zout. Tegelijk: ik twijfel grondig aan deze stelling.",
-                    "Wat een zwendel.",
-                    "Lieve help.",
-                    "Best eng eigenlijk.",
-                    "Dit zal geen WO3 ontketenen.",
-                    "Over lessen leren uit het verleden gesproken... ",
-                    "Ja. Wel een beetje kort door de bocht",
-                    "Waarom als ik even mag vragen? (Gekke maar belangrijke vraag)",
-                    'wollah tfoe, dacht ik, bitch ass cracka',
-                ]       
-                response = random.choice(phrases) 
-                print(date_time, ">replied", message.guild.name, message.channel.name, response)
-                await message.channel.send(response, reference=message.to_reference())
-                return
+        if 'iwalden' in message.content.lower() and len(message.content) > 10:  
+            phrases = [
+                "Neem het met een korrel zout. Tegelijk: ik twijfel grondig aan deze stelling.",
+                "Wat een zwendel.",
+                "Lieve help.",
+                "Best eng eigenlijk.",
+                "Dit zal geen WO3 ontketenen.",
+                "Over lessen leren uit het verleden gesproken... ",
+                "Ja. Wel een beetje kort door de bocht",
+                "Waarom als ik even mag vragen? (Gekke maar belangrijke vraag)",
+                'wollah tfoe, dacht ik, bitch ass cracka',
+            ]       
+            response = random.choice(phrases) 
+            print(date_time, ">replied", message.guild.name, message.channel.name, response)
+            await message.channel.send(response, reference=message.to_reference())
+            return
 
     else:
         pass

@@ -234,7 +234,7 @@ async def on_message(message):
 
         # iWaldeeeeeeeeeeeeeeeen ---------------------------------------------------------
         if 'iwalden' in message.content.lower():
-            y = random.randint(0, 5)
+            y = random.randint(0, 1)
             if y == 0:     
                 phrases = [
                     "Neem het met een korrel zout. Tegelijk: ik twijfel grondig aan deze stelling.",

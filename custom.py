@@ -53,3 +53,31 @@ async def dm(user, msg_str):
         dm_channel = await user.create_dm()
 
     await dm_channel.send(msg_str)
+
+def set_state(key, value):
+    filename = f'trackrecord/_{key}.txt'
+    with open(filename, 'w') as file:
+        file.write(str(value))
+
+def cycle(key, maximum):
+    filename = f'trackrecord/_{key}.txt'
+
+    # read
+    number = 0
+    lines = []
+    if os.path.exists(filename):
+        with open(filename) as file:
+            lines = file.readlines()  
+        number = int(lines[0]) 
+    
+    print(number)
+
+    # inc
+    number += 1
+    if number > maximum:
+        number = 0
+
+    with open(filename, 'w') as file:
+        file.write(str(number))
+
+    return number

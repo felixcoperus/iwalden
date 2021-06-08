@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 import os.path
 from datetime import datetime, timedelta
 
-from custom import warn, dm
+from custom import *
 
 
 # -- BOT CONFIG-----------------------------------------------------------------------
@@ -98,20 +98,20 @@ async def on_message(message):
 
 
     # Ik heb alle rode pillen die je wilde krijgen ---------------------------------------
-    y = random.randint(0, 4)
     if message.content == "!redpill":
-        print(date_time, ">redpill", message.guild.name, message.channel.name, y)
+        redpills = [
+            ("Zalig, dit. Lekker met koptelefoon op aan het luisteren. :pray::wink:  https://www.youtube.com/watch?v=YRNKjQg6y-c", None),
+            ("Inspiratie voor het weekend. https://www.youtube.com/watch?v=vpp5EXZZrgA", None),
+            ("De hele show. Alvast een zalig begin, de rest moet ik nog kijken. Dit zal zeker weer nieuwe stellingen en discussies opleveren. https://www.youtube.com/watch?v=mthj2Z7xqvM", None),
+            ("In de #multimedia staat genoeg om jezelf een hart mee onder de riem te steken in je vrije (geïnformeerde?) keuze.", None),
+            ("Veel plezier! :thumbsup::thumbsup:", discord.File(r'files/Industrial-Society-and-Its-Future-Theodore-Kaczynski.pdf')),
+        ]
+        index = cycle('redpills', len(redpills) - 1)
+        response = redpills[index]        
 
-        if y == 0:
-            await message.channel.send("Zalig, dit. Lekker met koptelefoon op aan het luisteren. :pray::wink:  https://www.youtube.com/watch?v=YRNKjQg6y-c", reference=message.to_reference())     
-        elif y == 1:
-            await message.channel.send("Inspiratie voor het weekend. https://www.youtube.com/watch?v=vpp5EXZZrgA", reference=message.to_reference())     
-        elif y == 2:
-            await message.channel.send("De hele show. Alvast een zalig begin, de rest moet ik nog kijken. Dit zal zeker weer nieuwe stellingen en discussies opleveren. https://www.youtube.com/watch?v=mthj2Z7xqvM", reference=message.to_reference())   
-        elif y == 3:
-            await message.channel.send("In de #multimedia staat genoeg om jezelf een hart mee onder de riem te steken in je vrije (geïnformeerde?) keuze.", reference=message.to_reference())   
-        elif y == 4:            
-            await message.channel.send("Veel plezier! :thumbsup::thumbsup:", file=discord.File(r'files/Industrial-Society-and-Its-Future-Theodore-Kaczynski.pdf'), reference=message.to_reference())    
+        print(date_time, ">redpill", message.guild.name, message.channel.name, index)
+
+        await message.channel.send(response[0], file=response[1], reference=message.to_reference())    
         return
 
     # Slimmerd commando ------------------------------------------------------------------
@@ -245,7 +245,9 @@ async def on_message(message):
                 "Waarom als ik even mag vragen? (Gekke maar belangrijke vraag)",
                 'wollah tfoe, dacht ik, bitch ass cracka',
             ]       
-            response = random.choice(phrases) 
+            index = cycle('phrases', len(phrases) - 1)
+            response = phrases[index]
+
             print(date_time, ">replied", message.guild.name, message.channel.name, response)
             await message.channel.send(response, reference=message.to_reference())
             return

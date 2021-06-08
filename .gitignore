@@ -3,3 +3,4 @@ program.out
 .vscode
 local_*
 trackrecord/_*
+__pycache__/*

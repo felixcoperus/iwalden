@@ -1,80 +1,33 @@
-# bot.py
 import os
 import random
 import re
 
 import discord
 from dotenv import load_dotenv
-from datetime import datetime, timedelta
 import os.path
+from datetime import datetime, timedelta
 
+from custom import warn, dm
+
+
+# -- BOT CONFIG-----------------------------------------------------------------------
+# ====================================================================================
+botcfg = {}
+botcfg['home_channel'] = 'bot-commandos'
+botcfg['guardian'] = 'Felikc'
+
+# -- CLIENT SETUP --------------------------------------------------------------------
+# ====================================================================================
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 intents = discord.Intents.default()
 intents.members = True
 
-client = discord.Client(intents=intents)
+client = discord.Client(intents=intents)   
 
-# ========================================================================================
-# CUSTOM FUNCTIONS
-# ========================================================================================
-
-def warn(author_name, warn_type, cooldown):
-    ''' usage:  
-            cooldown = timedelta(weeks=0, days=0, hours=0, minutes=0, seconds=10)
-            warnings = warn(message.author.name, 'badonkabonk', cooldown) '''
-
-    # input
-    filename = f'trackrecord/_{warn_type}.txt' 
-    #output
-    warnings = 1 
-
-    # init
-    now = datetime.now() 
-    dateformat = "%m/%d/%Y, %H:%M:%S"
-    date_time = now.strftime(dateformat)       
-
-    # Get existant warnings
-    lines = []
-    if os.path.exists(filename):
-        with open(filename) as file:
-            lines = file.readlines()
-
-    # - remove cooldowned warnings
-    # - count how many times the author has been warned already
-    # - write new warning
-    with open(filename, 'w') as file:
-        for line in lines:
-            # Test if warning in file is old enough to be removed
-            warning_datetime, warning_author = [x.strip() for x in line.split(';')]
-            datetime_dif = now - datetime.strptime(warning_datetime, dateformat)
-            if datetime_dif <= cooldown:
-                # Not old enough, write back to file
-                file.write(line)
-
-                # increment output warning if same author as current
-                if warning_author == author_name:
-                    warnings += 1
-    
-        # Write new warning
-        file.write(f'{date_time}; {author_name}\n')
-
-        # Output
-        return warnings
-
-
-# ========================================================================================
-# CLIENT SETTINGS
-# ========================================================================================
-
-# Only used for debug atm
-@client.event
-async def on_ready():
-    print(
-        f'{client.user} is connected'
-    )
-
+# -- MESSAGE EVENT -------------------------------------------------------------------
+# ====================================================================================
 @client.event
 async def on_message(message):
     # Init
@@ -85,33 +38,31 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    # ------------------------------- commandos --------------------------------------------------------
-    # test
-    if message.content == '!fc':
-        manage_messages = message.channel.permissions_for(message.author).manage_messages
-        return
 
-    # buikspreekpop
-    if message.content.startswith('!say'):
-        # zeg na
+    # -- GLOBAL COMMANDS -----------------------------------------------------------------
+    # ====================================================================================
+
+    # !say -------------------------------------------------------------------------------
+    if message.content.startswith('!say '):
+        # repeat given text without the command prefix
         text = message.content[5:]
         await message.channel.send(text, reference=message.reference)
 
-        # verwijder commando
+        # remove original message
         await message.delete()
         return
             
 
-    # Better clear command
+    # Remove N messages (newest to oldest) -----------------------------------------------
     if message.content.startswith("!clean"):
         # get user felixc to let him know if people try to misuse the bot
-        felikc = message.guild.get_member_named('Felikc')
+        bot_guardian_user = message.guild.get_member_named(botcfg['guardian'])
 
         # test if user has manage_messages permission
         manage_messages = message.channel.permissions_for(message.author).manage_messages
         print(manage_messages)
         if manage_messages == False:
-            await message.channel.send(f"Computer says no :hot_face: {felikc.mention}", reference=message.to_reference())
+            await message.channel.send(f"Computer says no :hot_face: {bot_guardian_user.mention}", reference=message.to_reference())
             return
 
         # get amount to delete
@@ -124,22 +75,18 @@ async def on_message(message):
 
         print(date_time, f">clear {number}", message.guild.name, message.channel.name, message.author.name)
 
-
         # get messages & delete
         messages = await message.channel.history(limit=number).flatten()
         for msg in messages:
             await msg.delete()
 
         # dm author
-        dm_channel = message.author.dm_channel
-        if dm_channel is None:
-            dm_channel = await message.author.create_dm()
-        await dm_channel.send(f"Klaar met verwijderen van {number - 1} berichten in {message.channel.name}.")
+        await dm(message.author, f"Klaar met verwijderen van {number - 1} berichten in {message.channel.name}.")
 
         print("Done deleting messages.")
         return
 
-    # Trucje
+    # Trucje -----------------------------------------------------------------------------
     if message.content == "!valaan":
         print(date_time, ">attack", message.guild.name, message.channel.name)
         ref = message.reference
@@ -150,7 +97,7 @@ async def on_message(message):
 
 
 
-    # Ik heb alle rode pillen die je wilde krijgen
+    # Ik heb alle rode pillen die je wilde krijgen ---------------------------------------
     y = random.randint(0, 4)
     if message.content == "!redpill":
         print(date_time, ">redpill", message.guild.name, message.channel.name, y)
@@ -167,7 +114,7 @@ async def on_message(message):
             await message.channel.send("Veel plezier! :thumbsup::thumbsup:", file=discord.File(r'files/Industrial-Society-and-Its-Future-Theodore-Kaczynski.pdf'), reference=message.to_reference())    
         return
 
-    # Slimmerd commando
+    # Slimmerd commando ------------------------------------------------------------------
     if message.content == "!slim":
         print(date_time, ">slim-command", message.guild.name, message.channel.name)
         ref = message.reference
@@ -184,7 +131,7 @@ async def on_message(message):
             return
         print("err: could not find ref", message.reference)   
 
-    # muilkorf verwijderen
+    # muilkorf verwijderen ---------------------------------------------------------------
     if message.content == "Sorry iWalden, ik zal geen badonkadonk meer zeggen" or ("sorry" in message.content.lower() and "walden" in message.content.lower()):
         # remove role
         roles = [x for x in await message.guild.fetch_roles() if x.name == "iMuilkorf"]
@@ -197,26 +144,10 @@ async def on_message(message):
         return
 
 
-    # Only respond in #bot-commands, unless user is Felixc
-    if message.channel.name != "bot-commandos":
-        return   
+    # -- RESPOND TO CONTENTS (Global) ----------------------------------------------------
+    # ====================================================================================
 
-    
-
-    # ------------------------------- content-based ---------------------------------------------------
-    # Pikkelikker
-    if re.findall(r'\b(pik)\b', message.content, re.IGNORECASE):
-        print(date_time, ">pik", message.guild.name, message.channel.name)
-        await message.channel.send("Pik?", reference=message.to_reference())
-        return
-
-    # Respetto
-    if message.content == "😂 😂":
-        print(date_time, ">respetto", message.guild.name, message.channel.name)
-        await message.channel.send("ik houd van humor maar ik houd nog meer van respect", reference=message.to_reference())
-        return
-
-    # gewoon joods
+    # "Gewoon joods" ---------------------------------------------------------------------
     mc = message.content
     if ("joods" in mc or "joden" in mc or "jood" in mc) and "gewoon" in mc:
         response = "Je kunt niet \"gewoon joods\" zijn, als je wil kunnen we doorpraten in #gamer-zone. Volgensmij is het antisemitisch om te denken dat er menselijke rassen zijn."
@@ -224,69 +155,84 @@ async def on_message(message):
         await message.channel.send(response, reference=message.to_reference())
         return
 
-    # badonkadonk
-    if 'badonkadonk' in message.content.lower() or 'badonkabonk' in message.content.lower():
-        author = message.author
-        warning_type = 'badonkadonk'
-        cooldown = timedelta(weeks=0, days=0, hours=2, minutes=0, seconds=0)
-
-        # find how many times the author has been warned for this error already
-        warnings = warn(author.name, warning_type, cooldown)
-
-        print(date_time, ">badonkadonk", message.author.name, warnings)
-
-        # define responses and pick right one
-        responses = []
-        responses.append(
-            "Hier op deze server zitten best veel mensen met een warmbloedig hart. "
-            "Mods, leden, echt veel mensen die je in het echt ook niet \"badonkadonk\" in hun gezicht zou zeggen als ze "
-            "het over diepe dingen hebben, en hun best doen. \n"
-            "Ik begrijp dat het even lollig was en ik neem je de meme daarom ook niet kwalijk.\n" 
-            "Maar zou je hem na dit gesprek nog steeds plaatsen?"
-        )
-        responses.append(
-            "Ik vind dit heel jammer."
-        )       
-        response = ":cry:"
-        if warnings <= len(responses):
-            response = responses[warnings - 1]
-
-        # send response
-        await message.channel.send(response, reference=message.to_reference())
-
-        # give mute role
-        if warnings > 1:
-            roles = [x for x in await message.guild.fetch_roles() if x.name == "iMuilkorf"]
-            await author.add_roles(*roles, reason="badonkabonk")
-
-            # dm user voor instructies hoe te onmuilkorven
-            dm_channel = author.dm_channel
-            if dm_channel is None:
-                dm_channel = await author.create_dm()
-            await dm_channel.send("Ik ben heel teleurgesteld in jou. Als je \"Sorry iWalden, ik zal geen badonkadonk meer zeggen\" zegt in **#bot-commandos** vergeef ik het je. We kunnen allemaal leren van onze fouten.")
-
-            print(date_time, ">muilkorf:badonkadonk", message.author.name, warnings)
-            
-        return             
+    # Respetto ---------------------------------------------------------------------------
+    if message.content == "😂 😂":
+        print(date_time, ">respetto", message.guild.name, message.channel.name)
+        await message.channel.send("ik houd van humor maar ik houd nog meer van respect", reference=message.to_reference())
+        return
     
-
-    # ------------------------------- 2de rangs memerij -----------------------------------------------------
-    # # Verkeerde kanaal
-    # print(message.guild.name, message.channel.name) # debug
-    # if '?' in message.content and 'waarom' in message.content and message.channel.name != 'algemeen':
-    #     response = "Interessante vraag. Even doorpraten in #algemeen alstjeblieft. Volgende keer kan je ook meteen daar de vragen stellen." 
-    #     await message.channel.send(response, reference=message.to_reference())
-    #     print(date_time, ">vraag", message.guild.name, message.channel.name, response)
-    #     return      
-
-    # Slimmerd
-    if len(message.content) > 150:
-        y = random.randint(0, 5)
-        if y == 0:
-            response = "Ik heb met plezier je bijdragen gelezen en ik weet dat je een slimmerdje bent. \nSlimmerik. \nSlim" 
-            await message.channel.send(response, reference=message.to_reference())
-            print(date_time, ">slimmerd", message.guild.name, message.channel.name, response)
+    # -- RESPOND TO CONTENTS -------------------------------------------------------------
+    # ====================================================================================
+    if message.channel.name == botcfg['home_channel']:
+          
+        # Pikkelikker --------------------------------------------------------------------
+        if re.findall(r'\b(pik)\b', message.content, re.IGNORECASE):
+            print(date_time, ">pik", message.guild.name, message.channel.name)
+            await message.channel.send("Pik?", reference=message.to_reference())
             return
+
+        # badonkadonk --------------------------------------------------------------------
+        if 'badonkadonk' in message.content.lower() or 'badonkabonk' in message.content.lower():
+            # Setup
+            author = message.author
+            warning_type = 'badonkadonk'
+            cooldown = timedelta(weeks=0, days=0, hours=2, minutes=0, seconds=0)
+
+            # Find how many times the author has been warned for this error already
+            warnings = warn(author.name, warning_type, cooldown)
+
+            print(date_time, ">badonkadonk", message.author.name, warnings)
+
+            # Define responses and pick right one
+            responses = []
+            responses.append(
+                "Hier op deze server zitten best veel mensen met een warmbloedig hart. "
+                "Mods, leden, echt veel mensen die je in het echt ook niet \"badonkadonk\" in hun gezicht zou zeggen als ze "
+                "het over diepe dingen hebben, en hun best doen. \n"
+                "Ik begrijp dat het even lollig was en ik neem je de meme daarom ook niet kwalijk.\n" 
+                "Maar zou je hem na dit gesprek nog steeds plaatsen?"
+            )
+            responses.append(
+                "Ik vind dit heel jammer."
+            )       
+            response = ":cry:"
+            if warnings <= len(responses):
+                response = responses[warnings - 1]
+
+            # Send response to offending user
+            await message.channel.send(response, reference=message.to_reference())
+
+            # Give mute role when repeat offender
+            if warnings > 1:
+                # Give correct mute role
+                roles = [x for x in await message.guild.fetch_roles() if x.name == "iMuilkorf"]
+                await author.add_roles(*roles, reason="badonkabonk")
+
+                # dm user voor instructies hoe te onmuilkorven
+                await dm(message.author, "Ik ben heel teleurgesteld in jou. Als je \"Sorry iWalden, ik zal geen badonkadonk meer zeggen\" zegt in **#bot-commandos** vergeef ik het je. We kunnen allemaal leren van onze fouten.")
+
+                print(date_time, ">muilkorf:badonkadonk", message.author.name, warnings)
+                
+            return   
+
+        # Slimmerd -----------------------------------------------------------------------
+        if len(message.content) > 150:
+            y = random.randint(0, 5)
+            if y == 0:
+                response = "Ik heb met plezier je bijdragen gelezen en ik weet dat je een slimmerdje bent. \nSlimmerik. \nSlim" 
+                await message.channel.send(response, reference=message.to_reference())
+                print(date_time, ">slimmerd", message.guild.name, message.channel.name, response)
+                return      
+
+        # Verkeerde kanaal ---------------------------------------------------------------
+        print(message.guild.name, message.channel.name) # debug
+        if '?' in message.content and 'waarom' in message.content and message.channel.name != 'algemeen':
+            response = "Interessante vraag. Even doorpraten in #algemeen alstjeblieft. Volgende keer kan je ook meteen daar de vragen stellen." 
+            await message.channel.send(response, reference=message.to_reference())
+            print(date_time, ">vraag", message.guild.name, message.channel.name, response)
+            return                                    
+    else:
+        pass
 
 
 
@@ -315,7 +261,17 @@ async def on_message(message):
     #     return
 
 
+# -- AT LOAD EVENT -------------------------------------------------------------------
+# ====================================================================================
+# Only used for debug atm
+@client.event
+async def on_ready():
+    print(
+        f'{client.user} is connected'
+    )
 
+# -- CLIENT START --------------------------------------------------------------------
+# ====================================================================================
 # Start client
 client.run(TOKEN)
 

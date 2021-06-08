@@ -230,35 +230,34 @@ async def on_message(message):
             response = "Interessante vraag. Even doorpraten in #algemeen alstjeblieft. Volgende keer kan je ook meteen daar de vragen stellen." 
             await message.channel.send(response, reference=message.to_reference())
             print(date_time, ">vraag", message.guild.name, message.channel.name, response)
-            return                                    
+            return       
+
+        # iWaldeeeeeeeeeeeeeeeen ---------------------------------------------------------
+        if 'iwalden' in message.content.lower():
+            y = random.randint(0, 5)
+            if y == 0:     
+                phrases = [
+                    "Neem het met een korrel zout. Tegelijk: ik twijfel grondig aan deze stelling.",
+                    "Wat een zwendel.",
+                    "Lieve help.",
+                    "Best eng eigenlijk.",
+                    "Dit zal geen WO3 ontketenen.",
+                    "Over lessen leren uit het verleden gesproken... ",
+                    "Ja. Wel een beetje kort door de bocht",
+                    "Waarom als ik even mag vragen? (Gekke maar belangrijke vraag)",
+                    'wollah tfoe, dacht ik, bitch ass cracka',
+                ]       
+                response = random.choice(phrases) 
+                print(date_time, ">replied", message.guild.name, message.channel.name, response)
+                await message.channel.send(response, reference=message.to_reference())
+                return
+
     else:
         pass
 
 
 
-    # ------------------------------- random responses -----------------------------------------------------
-    # # Random reacties eens in de x posts
-    # y = random.randint(0, 20)
-    # print(date_time, message.guild.name, message.channel.name, y)
-    # if y == 0: #and message.guild.name == "TestServer":
-    #     phrases = [
-    #         "Interessant! Bedankt voor je bijdrage.",
-    #         "Neem het met een korrel zout. Tegelijk: ik twijfel grondig aan deze stelling.",
-    #         "Wat een zwendel.",
-    #         "Lieve help.",
-    #         "Ik heb wel zitten te genieten af en toe.",
-    #         "Heel interessant.",
-    #         "Ja, vreemd hoor! Dank voor het delen",
-    #         "Best eng eigenlijk.",
-    #         "Dit zal geen WO3 ontketenen.",
-    #         "Over lessen leren uit het verleden gesproken... ",
-    #         "Ja. Wel een beetje kort door de bocht",
-    #         "Waarom als ik even mag vragen? (Gekke maar belangrijke vraag)",
-    #     ]       
-    #     response = random.choice(phrases) 
-    #     print(date_time, ">replied", message.guild.name, message.channel.name, response)
-    #     await message.channel.send(response, reference=message.to_reference())
-    #     return
+
 
 
 # -- AT LOAD EVENT -------------------------------------------------------------------

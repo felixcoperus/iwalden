@@ -44,6 +44,11 @@ async def on_message(message):
 
     # !say -------------------------------------------------------------------------------
     if message.content.startswith('!say '):
+        # kk hektrak
+        if message.author.name == 'Felikc':
+            await message.channel.send('phi-males gaan mij niet vertellen wat ik moet zeggen voor hun kk hektrak tfoeee', reference=message.to_reference())
+            return
+
         # repeat given text without the command prefix
         text = message.content[5:]
         await message.channel.send(text, reference=message.reference)

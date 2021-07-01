@@ -101,6 +101,16 @@ async def on_message(message):
         print("err: could not find ref", message.reference)
 
 
+    if message.content == "!badonk":
+        print(date_time, ">badonk-img", message.guild.name, message.channel.name)
+
+        # send msg
+        await message.channel.send(':sweat:', file=discord.File(r'files/badonk.png'))
+
+        # remove command msg
+        await message.delete()        
+        return
+
 
     # Ik heb alle rode pillen die je wilde krijgen ---------------------------------------
     if message.content == "!redpill":

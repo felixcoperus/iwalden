@@ -56,7 +56,16 @@ async def on_message(message):
         # remove original message
         await message.delete()
         return
-            
+
+    # !say -------------------------------------------------------------------------------
+    if message.content.startswith('!dm '):
+        # dm message to refenced author
+        refmsg = await message.channel.fetch_message(message.reference.message_id)
+        await dm(refmsg.author, "", file=discord.File(r'files/offense.mp4'))
+
+        # remove original message
+        await message.delete()
+        return
 
     # Remove N messages (newest to oldest) -----------------------------------------------
     if message.content.startswith("!clean"):
@@ -269,10 +278,6 @@ async def on_message(message):
 
     else:
         pass
-
-
-
-
 
 
 # -- AT LOAD EVENT -------------------------------------------------------------------

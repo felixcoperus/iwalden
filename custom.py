@@ -44,7 +44,7 @@ def warn(author_name, warn_type, cooldown):
         # Output
         return warnings
 
-async def dm(user, msg_str):
+async def dm(user, msg_str, file=None):
     ''' usage: dm(message.author, "REEEE") '''
 
     # Ensure dm_channel exists
@@ -52,7 +52,7 @@ async def dm(user, msg_str):
     if dm_channel is None:
         dm_channel = await user.create_dm()
 
-    await dm_channel.send(msg_str)
+    await dm_channel.send(msg_str, file=file)
 
 def set_state(key, value):
     filename = f'trackrecord/_{key}.txt'

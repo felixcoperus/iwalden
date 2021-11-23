@@ -44,7 +44,7 @@ def warn(author_name, warn_type, cooldown):
         # Output
         return warnings
 
-async def dm(user, msg_str):
+async def dm(user, msg_str, file=None):
     ''' usage: dm(message.author, "REEEE") '''
 
     # Ensure dm_channel exists
@@ -52,7 +52,7 @@ async def dm(user, msg_str):
     if dm_channel is None:
         dm_channel = await user.create_dm()
 
-    await dm_channel.send(msg_str)
+    await dm_channel.send(msg_str, file=file)
 
 def set_state(key, value):
     filename = f'trackrecord/_{key}.txt'
@@ -69,8 +69,6 @@ def cycle(key, maximum):
         with open(filename) as file:
             lines = file.readlines()  
         number = int(lines[0]) 
-    
-    print(number)
 
     # inc
     number += 1
@@ -81,3 +79,9 @@ def cycle(key, maximum):
         file.write(str(number))
 
     return number
+
+def match(matchlist, message_content):
+    for matchstring in matchlist:
+        if matchstring in message_content:
+            return True
+    return False

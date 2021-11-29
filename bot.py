@@ -1,7 +1,7 @@
 import os
 import random
 import re
-import logging
+from datetime import datetime
 
 import discord
 from dotenv import load_dotenv
@@ -11,14 +11,17 @@ from datetime import datetime, timedelta
 from custom import *
 
 # Logging
-fmt = '[%(levelname)s] %(asctime)s - %(message)s'
-logging.basicConfig(level=logging.INFO, format=fmt)
-
-def Log(message, function_name, extra_info=None):
+def Log(message, function_name, extra_info=None, levelname="INFO"):
     msg = f'{message.guild.name}/{message.channel.name}/{function_name}, {message.author.name}, msg:"{message.content}"'
     if extra_info is not None:
         msg += f' [{extra_info}]'
-    logging.info(msg)
+    print(f'[{levelname}] {datetime.now().strftime("%d/%m/%Y %H:%M:%S")} - {msg}')
+
+def SimpleLog(msg='', function_name="", levelname="INFO"):
+    msg = f'{function_name}, msg:"{msg}"'
+    print(f'[{levelname}] {datetime.now().strftime("%d/%m/%Y %H:%M:%S")} - {msg}')   
+
+SimpleLog(msg="Test logger", function_name="script") 
 
 
 # -- BOT CONFIG-----------------------------------------------------------------------
@@ -66,12 +69,25 @@ async def on_message(message):
         return
 
     # !offense -------------------------------------------------------------------------------
-    if message.content.startswith('!offense'):
+    if message.content.startswith('!cringe_dm'):
         # dm message to refenced author
         refmsg = await message.channel.fetch_message(message.reference.message_id)
         
-        Log(message, '!offense', extra_info=refmsg.author)
+        Log(message, '!cringe_dm', extra_info=refmsg.author)
         await dm(refmsg.author, "", file=discord.File(r'files/offense.mp4'))
+
+        # remove original message
+        await message.delete()
+        return        
+
+
+    # !offense -------------------------------------------------------------------------------
+    if message.content.startswith('!cringe'):
+        # dm message to refenced author
+        refmsg = await message.channel.fetch_message(message.reference.message_id)
+        
+        Log(message, '!cringe', extra_info=refmsg.author)
+        await message.channel.send("", file=discord.File(r'files/offense.mp4'), reference=message.reference)
 
         # remove original message
         await message.delete()
@@ -317,7 +333,7 @@ async def on_message(message):
 # Only used for debug atm
 @client.event
 async def on_ready():
-    logging.info(f'{client.user} is connected')
+    SimpleLog(msg=f'{client.user} is connected', function_name="on_ready()")
 
 # -- CLIENT START --------------------------------------------------------------------
 # ====================================================================================

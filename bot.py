@@ -23,6 +23,14 @@ def SimpleLog(msg='', function_name="", levelname="INFO"):
 
 SimpleLog(msg="Test logger", function_name="script") 
 
+async def fupjotr(message):
+    banlist = ['']
+    if message.author.name in banlist:
+        await message.channel.send(f"Jij gaat mij niet vertellen wat ik moet doen vriend.", reference=message.to_reference())
+        return True
+    return False
+
+
 
 # -- BOT CONFIG-----------------------------------------------------------------------
 # ====================================================================================
@@ -52,11 +60,15 @@ async def on_message(message):
     if message.author == client.user:
         return
 
+
     # -- GLOBAL COMMANDS -----------------------------------------------------------------
     # ====================================================================================
 
     # !say -------------------------------------------------------------------------------
     if message.content.startswith('!say '):
+        r = await fupjotr(message)
+        if r:
+            return
 
         # repeat given text without the command prefix
         text = message.content[5:]
@@ -70,6 +82,10 @@ async def on_message(message):
 
     # !offense -------------------------------------------------------------------------------
     if message.content.startswith('!cringe_dm'):
+        r = await fupjotr(message)
+        if r:
+            return
+
         # dm message to refenced author
         refmsg = await message.channel.fetch_message(message.reference.message_id)
         
@@ -83,6 +99,10 @@ async def on_message(message):
 
     # !offense -------------------------------------------------------------------------------
     if message.content.startswith('!cringe'):
+        r = await fupjotr(message)
+        if r:
+            return
+
         # dm message to refenced author
         refmsg = await message.channel.fetch_message(message.reference.message_id)
         
@@ -128,6 +148,10 @@ async def on_message(message):
 
     # Trucje -----------------------------------------------------------------------------
     if message.content == "!valaan":
+        r = await fupjotr(message)
+        if r:
+            return
+
         Log(message, '!valaan')
         ref = message.reference
         if ref is not None:
@@ -137,6 +161,10 @@ async def on_message(message):
 
 
     if message.content == "!badonk":
+        r = await fupjotr(message)
+        if r:
+            return
+
         Log(message, '!badonk-img')
 
         # send msg
@@ -149,6 +177,10 @@ async def on_message(message):
 
     # Ik heb alle rode pillen die je wilde krijgen ---------------------------------------
     if message.content == "!redpill":
+        r = await fupjotr(message)
+        if r:
+            return
+
         redpills = [
             ("Zalig, dit. Lekker met koptelefoon op aan het luisteren. :pray::wink:  https://www.youtube.com/watch?v=YRNKjQg6y-c", None),
             ("Inspiratie voor het weekend. https://www.youtube.com/watch?v=vpp5EXZZrgA", None),
@@ -165,6 +197,10 @@ async def on_message(message):
 
     # Slimmerd commando ------------------------------------------------------------------
     if message.content == "!slim":
+        r = await fupjotr(message)
+        if r:
+            return
+
         Log(message, '!slim')
         ref = message.reference
         if ref is not None:
@@ -195,9 +231,15 @@ async def on_message(message):
 
     # -- RESPOND TO CONTENTS (Global) ----------------------------------------------------
     # ====================================================================================
+    mc = message.content.lower()
+
+
+    # Baudaddy
+    if mc == "baudet":
+        await message.channel.send("", file=discord.File(r'files/baudaddy.mov'), reference=message.reference)
+        return
 
     # "Gewoon joods" ---------------------------------------------------------------------
-    mc = message.content
     if ("joods" in mc or "joden" in mc or "jood" in mc) and "gewoon" in mc:
         response = "Je kunt niet \"gewoon joods\" zijn, als je wil kunnen we doorpraten in #gamer-zone. Volgensmij is het antisemitisch om te denken dat er menselijke rassen zijn."
         Log(message, '>joods')
@@ -206,10 +248,16 @@ async def on_message(message):
 
     # Negus ------------------------------------------------------------------------------
     if match(["neger","nigga","nigger"], mc):
-        response = "Tsktsk"
         Log(message, '>negus')
         await message.channel.send(reference=message.to_reference(), file=discord.File(r'files/tsktsk.mp4'))
         return
+
+    if match(["n i g g a", "n e g e r", "n i g g e r"], mc):
+        Log(message, '>negus_emoji')
+        emoji = discord.utils.get(message.guild.emojis, name='7390pepethink')
+        await message.add_reaction(emoji)
+        return
+
 
     # Respetto ---------------------------------------------------------------------------
     if message.content == "😂 😂":
@@ -219,7 +267,7 @@ async def on_message(message):
     
     # -- RESPOND TO CONTENTS -------------------------------------------------------------
     # ====================================================================================
-    mc = message.content
+    mc = message.content.lower()
     if (message.guild.name == 'TestServer' or message.channel.name == botcfg['home_channel']) and ((re.search('(?<![A-z])(bi)+(?![A-z])', mc) is not None) or 'flikker' in mc or 'lgbti' in mc or 'bisex' in mc or 'hetero' in mc or 'gay' in mc or 'homo' in mc):
         
         homo = [

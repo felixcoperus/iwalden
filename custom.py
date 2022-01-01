@@ -85,3 +85,8 @@ def match(matchlist, message_content):
         if matchstring in message_content:
             return True
     return False
+
+def appendfile(key, value):
+    filename = f'trackrecord/_{key}.txt'
+    with open(filename, 'a') as file:
+        file.write(f'{str(value)}\n')

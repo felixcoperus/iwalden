@@ -2,6 +2,7 @@ import os
 import random
 import re
 from datetime import datetime
+import asyncio
 
 import discord
 from dotenv import load_dotenv
@@ -63,6 +64,52 @@ async def on_message(message):
 
     # -- GLOBAL COMMANDS -----------------------------------------------------------------
     # ====================================================================================
+    # Lakomte -------------------------------------------------------------------------------
+    LakomteUser = message.guild.get_member_named('LaKomte#1042')
+    if LakomteUser in message.mentions:
+        logtext = f'{message.author} - {message.channel.name}'
+        Log(message, 'Lakomte', extra_info=logtext)
+
+        # Get botguardian
+        bot_guardian_user = message.guild.get_member_named(botcfg['guardian'])
+
+        # deny self elevation
+        if message.author.discriminator == LakomteUser.discriminator:
+            await message.channel.send('Waarom tag je jezelf? :eyes:', reference=message.to_reference())
+            return
+        
+        # Get time
+        now = datetime.now() 
+        dateformat = "%m/%d/%Y, %H:%M:%S"
+        date_time = now.strftime(dateformat)         
+
+        # Add line to trackrecord
+        msgcont = message.content.replace("\n", "; ")
+        msg = f'{date_time} - {message.author} - {msgcont}'
+        appendfile('lakomte', msg)
+
+        # Read number of lines in trackrecord
+        with open('trackrecord/_lakomte.txt', 'r') as file:
+            num = len(file.readlines())
+        
+        # Get status
+        maxx = 10
+        left = maxx - num
+
+        # Let Felikc know what's up
+        await dm(bot_guardian_user, f'Lakomte actie remaining: {left}. {logtext}')
+
+        # Respond in channel
+        if left > 0:
+            text = f"{left} van {maxx} pings resterend voordat Lakomte mod rechten krijgt op deze server :flushed:"
+            await message.channel.send(text, reference=message.to_reference())
+        if left == 0:
+            text = f"Bedankt voor je bijdrage, met deze ping krijgt Lakomte mod rechten, jij zal altijd herinnerd worden als het server lid dat dit mogelijk heeft gemaakt! :verwijfde_duim: "
+            await message.channel.send(text, reference=message.to_reference())
+
+        return
+
+
 
     # !say -------------------------------------------------------------------------------
     if message.content.startswith('!say '):
@@ -233,10 +280,24 @@ async def on_message(message):
     # ====================================================================================
     mc = message.content.lower()
 
+    # joteewaawee joteewaawee mkaddeshhhhhhh
+    if "hugo de jonge" in mc:
+        
+        response = "Krijg ik al die vieze energie aan me server, bah."
+        Log(message, '>jotewawe')
+        await message.channel.send(response, reference=message.to_reference())
+        await asyncio.sleep(4)
+        response = "Joteewaawee joteewaawee mkaddeshhhhhhh."
+        await message.channel.send(response)
+        return
 
     # Baudaddy
     if mc == "baudet":
-        await message.channel.send("", file=discord.File(r'files/baudaddy.mov'), reference=message.reference)
+        await message.channel.send("", file=discord.File(r'files/baudaddy.mov'), reference=message.to_reference())
+        return
+
+    if "TRANSZORG NU".lower() in mc:
+        await message.delete() 
         return
 
     # "Gewoon joods" ---------------------------------------------------------------------
@@ -245,19 +306,6 @@ async def on_message(message):
         Log(message, '>joods')
         await message.channel.send(response, reference=message.to_reference())
         return
-
-    # Negus ------------------------------------------------------------------------------
-    if match(["neger","nigga","nigger"], mc):
-        Log(message, '>negus')
-        await message.channel.send(reference=message.to_reference(), file=discord.File(r'files/tsktsk.mp4'))
-        return
-
-    if match(["n i g g a", "n e g e r", "n i g g e r"], mc):
-        Log(message, '>negus_emoji')
-        emoji = discord.utils.get(message.guild.emojis, name='7390pepethink')
-        await message.add_reaction(emoji)
-        return
-
 
     # Respetto ---------------------------------------------------------------------------
     if message.content == "😂 😂":
@@ -284,6 +332,18 @@ async def on_message(message):
         await message.channel.send(response[0], reference=message.to_reference())
 
     if message.channel.name == botcfg['home_channel']:
+
+        # Negus ------------------------------------------------------------------------------
+        if match(["neger","nigga","nigger"], mc) and not (match(["negeren"], mc)):
+            Log(message, '>negus')
+            await message.channel.send(reference=message.to_reference(), file=discord.File(r'files/tsktsk.mp4'))
+            return
+
+        if match(["n i g g a", "n e g e r", "n i g g e r"], mc):
+            Log(message, '>negus_emoji')
+            emoji = discord.utils.get(message.guild.emojis, name='7390pepethink')
+            await message.add_reaction(emoji)
+            return        
           
         # Pikkelikker --------------------------------------------------------------------
         if re.findall(r'\b(pik)\b', message.content, re.IGNORECASE):

@@ -10,27 +10,6 @@ from datetime import datetime, timedelta
 
 from custom import *
 
-# Logging
-def Log(message, function_name, extra_info=None, levelname="INFO"):
-    msg = f'{message.guild.name}/{message.channel.name}/{function_name}, {message.author.name}, msg:"{message.content}"'
-    if extra_info is not None:
-        msg += f' [{extra_info}]'
-    print(f'[{levelname}] {datetime.now().strftime("%d/%m/%Y %H:%M:%S")} - {msg}')
-
-def SimpleLog(msg='', function_name="", levelname="INFO"):
-    msg = f'{function_name}, msg:"{msg}"'
-    print(f'[{levelname}] {datetime.now().strftime("%d/%m/%Y %H:%M:%S")} - {msg}')   
-
-SimpleLog(msg="Test logger", function_name="script") 
-
-async def fupjotr(message):
-    banlist = ['']
-    if message.author.name in banlist:
-        await message.channel.send(f"Jij gaat mij niet vertellen wat ik moet doen vriend.", reference=message.to_reference())
-        return True
-    return False
-
-
 
 # -- BOT CONFIG-----------------------------------------------------------------------
 # ====================================================================================
@@ -447,3 +426,24 @@ async def on_ready():
 client.run(TOKEN)
 
 
+# -- SUPPORTING FUNCTIONS ------------------------------------------------------------
+# ====================================================================================
+# Logging
+def Log(message, function_name, extra_info=None, levelname="INFO"):
+    msg = f'{message.guild.name}/{message.channel.name}/{function_name}, {message.author.name}, msg:"{message.content}"'
+    if extra_info is not None:
+        msg += f' [{extra_info}]'
+    print(f'[{levelname}] {datetime.now().strftime("%d/%m/%Y %H:%M:%S")} - {msg}')
+
+def SimpleLog(msg='', function_name="", levelname="INFO"):
+    msg = f'{function_name}, msg:"{msg}"'
+    print(f'[{levelname}] {datetime.now().strftime("%d/%m/%Y %H:%M:%S")} - {msg}')   
+
+SimpleLog(msg="Test logger", function_name="script") 
+
+async def fupjotr(message):
+    banlist = ['']
+    if message.author.name in banlist:
+        await message.channel.send(f"Jij gaat mij niet vertellen wat ik moet doen vriend.", reference=message.to_reference())
+        return True
+    return False

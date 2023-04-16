@@ -1,5 +1,5 @@
 # iWalden
-De meme, de legende
+De meme, de legende.
 
 ## Installatie
 ```bash

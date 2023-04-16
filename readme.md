@@ -4,7 +4,6 @@ De meme, de legende
 ## Installatie
 ```bash
 pip install -U discord.py
-pip install -U python-dotenv
 
 git clone git@github.com:felixcoperus/iwalden.git
 cd iwalden/

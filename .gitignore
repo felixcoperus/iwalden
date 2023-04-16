@@ -1,6 +1,7 @@
-.env
-program.out
+**/.env
+**/program.out
+secrets/*
 .vscode
 local_*
-trackrecord/_*
+**/trackrecord/_*
 __pycache__/*

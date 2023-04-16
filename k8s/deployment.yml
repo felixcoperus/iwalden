@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iwalden-deployment
+  labels:
+    app: iwalden
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: iwalden
+  template:
+    metadata:
+      labels:
+        app: iwalden
+    spec:
+      containers:
+      - name: iwalden
+        image: felixcop/iwalden
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: secret-volume
+          mountPath: /app/secrets
+          readOnly: true
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: iwalden
